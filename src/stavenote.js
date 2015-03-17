@@ -260,6 +260,7 @@ Vex.Flow.StaveNote = (function() {
 
       this.keys = note_struct.keys;
       this.clef = note_struct.clef;
+      this.color = note_struct.color;
       this.octave_shift = note_struct.octave_shift;
       this.beam = null;
 
@@ -940,10 +941,27 @@ Vex.Flow.StaveNote = (function() {
 
       L("Rendering ", this.isChord() ? "chord :" : "note :", this.keys);
 
+      var old_stroke_style = null;
+      var old_fill_style = null;
+
       // Draw each part of the note
       this.drawLedgerLines();
       if (render_stem) this.drawStem();
+
+      if (this.color !== undefined) {
+        old_stroke_style = this.context.strokeStyle;
+        old_fill_style = this.context.fillStyle;
+        this.context.setStrokeStyle(this.color);
+        this.context.setFillStyle(this.color);
+      }
+
       this.drawNoteHeads();
+
+      if (this.color !== undefined) {
+        this.context.setStrokeStyle(old_stroke_style);
+        this.context.setFillStyle(old_fill_style);
+      }
+
       this.drawFlag();
       this.drawModifiers();
     }
